@@ -1,0 +1,63 @@
+============
+Include file
+============
+
+#include "a string"
+
+@@
+@@
+
+---
+
+(source_file
+    (include (string))
+    (changeset (unnamed_rule) (transformation))
+)
+
+==========
+Using file
+==========
+
+using "other string"
+
+@@
+@@
+
+---
+
+(source_file
+    (using_file (string))
+    (changeset (unnamed_rule) (transformation))
+)
+
+==============
+Using ISO file
+==============
+
+using <path/to/iso/file>
+
+@@
+@@
+
+---
+
+(source_file
+    (using_iso (pathToIsoFile))
+    (changeset (unnamed_rule) (transformation))
+)
+
+=======
+Virtual
+=======
+
+virtual id, another_id, ID
+
+@@
+@@
+
+---
+
+(source_file
+    (virtual (id) (id) (id))
+    (changeset (unnamed_rule) (transformation))
+)

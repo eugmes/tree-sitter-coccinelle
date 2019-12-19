@@ -1,0 +1,23 @@
+{
+  "name": "tree-sitter-coccinelle",
+  "version": "0.0.1",
+  "description": "Tree-sitter parser for coccinelle",
+  "main": "index.js",
+  "keywords": [
+    "parser",
+    "lexer"
+  ],
+  "scripts": {
+    "build": "tree-sitter generate && node-gyp build",
+    "test": "tree-sitter test"
+  },
+  "author": "Ievgenii Meshcheriakov",
+  "license": "ISC",
+  "repository": "github:eugmes/tree-sitter-coccinelle",
+  "dependencies": {
+    "nan": "^2.14.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.16.2"
+  }
+}

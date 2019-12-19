@@ -1,0 +1,10 @@
+==============
+Simplest Patch
+==============
+
+@@
+@@
+
+---
+
+(source_file (changeset (unnamed_rule) (transformation)))
