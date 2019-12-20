@@ -3,6 +3,11 @@ module.exports = grammar({
 
     word: $ => $.id,
 
+    extras: $ => [
+        /\s|\\\r?\n/,
+        $.comment,
+    ],
+
     rules: {
         source_file: $ => seq(
             repeat($._include_cocci),
@@ -144,5 +149,13 @@ module.exports = grammar({
         id: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
         _ids: $ => seq($.id, repeat(seq(',', $.id))),
+
+        comment: $ => token(choice(
+            seq('//', /(\\(.|\r?\n)|[^\\\n])*/),
+            seq(
+                '/*',
+                /[^*]*\*+([^/*][^*]*\*+)*/,
+                '/'
+            )))
     }
 });
