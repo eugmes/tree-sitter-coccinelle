@@ -129,11 +129,15 @@ module.exports = grammar({
 
         _const: $ => choice(
             $.string,
-            /[0-9]+/,
-            '...'
+            $.integer,
+            $.dots
         ),
 
         string: $ => /"[^"]*"/,
+
+        integer: $ => /[0-9]+/,
+
+        dots: $ => '...',
 
         pathToIsoFile: $ => /<.*>/,
 
