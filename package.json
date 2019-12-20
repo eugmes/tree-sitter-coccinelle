@@ -9,7 +9,9 @@
   ],
   "scripts": {
     "build": "tree-sitter generate && node-gyp rebuild",
-    "test": "tree-sitter test"
+    "test": "tree-sitter test",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test"
   },
   "author": "Ievgenii Meshcheriakov",
   "license": "ISC",
