@@ -1,0 +1,69 @@
+============
+Unnamed rule
+============
+
+@@
+@@
+
+---
+
+(source_file (changeset (metavariables) (transformation)))
+
+===================
+Unnamed with spaces
+===================
+
+@  @
+@@
+
+---
+
+(source_file (changeset (metavariables) (transformation)))
+
+============
+Simple named
+============
+
+@ simple_rule @
+@@
+
+---
+
+(source_file
+ (changeset
+  (metavariables (rulename (id)))
+  (transformation)
+ )
+)
+
+=======
+Extends
+=======
+
+@ rule extends other_rule @
+@@
+
+---
+
+(source_file
+ (changeset
+  (metavariables (rulename (id) (extends (id))))
+  (transformation)
+ )
+)
+
+==============
+Simple depends
+==============
+
+@ rule depends on other_rule @
+@@
+
+---
+
+(source_file
+ (changeset
+  (metavariables (rulename (id) (depends (dep (id)))))
+  (transformation)
+ )
+)

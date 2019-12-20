@@ -34,29 +34,52 @@ module.exports = grammar({
 
         rulename: $ => seq(
             $.id,
-            optional(seq('extends', $.id)),
-            optional(seq('depends', 'on')),
-            optional($.scope),
-            $.dep,
+            optional($.extends),
+            optional($.depends),
             optional($.iso),
             optional($.disable_iso),
             optional($.exists),
             optional($.rulekind)
         ),
 
+        extends: $ => seq('extends', $.id),
+
         scope: $ => choice('exists', 'forall'),
+
+        depends: $ => seq(
+            optional(seq('depends', 'on')),
+            optional($.scope),
+            $.dep
+        ),
 
         dep: $ => choice(
             $.id,
-            seq('!', $.id),
-            seq('!', '(', $.dep, ')'),
-            seq('ever', $.id),
-            seq('never', $.id),
-            prec.left(2, seq($.dep, '&&', $.dep)),
-            prec.left(1, seq($.dep, '||', $.dep)),
-            seq('file', 'in', $.string),
+            $.dep_not,
+            $.dep_cond,
+            $.dep_bin_op,
+            $.dep_file,
             seq('(', $.dep, ')')
         ),
+
+        dep_not: $ => seq(
+            '!',
+            choice(
+                $.id,
+                seq('(', $.dep, ')')
+            )
+        ),
+
+        dep_cond: $ => choice(
+            seq('ever', $.id),
+            seq('never', $.id),
+        ),
+
+        dep_bin_op: $ => choice(
+            prec.left(2, seq($.dep, '&&', $.dep)),
+            prec.left(1, seq($.dep, '||', $.dep))
+        ),
+
+        dep_file: $ => seq('file', 'in', $.string),
 
         iso: $ => seq('using', $.string, repeat(seq(',', $.string))),
 
