@@ -8,7 +8,7 @@
     "lexer"
   ],
   "scripts": {
-    "build": "tree-sitter generate && node-gyp build",
+    "build": "tree-sitter generate && node-gyp rebuild",
     "test": "tree-sitter test"
   },
   "author": "Ievgenii Meshcheriakov",
