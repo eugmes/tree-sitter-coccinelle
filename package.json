@@ -23,7 +23,7 @@
     "tree-sitter-cli": "^0.16.2"
   },
   "files": [
-      "binding.gyp",
-      "src/"
+    "binding.gyp",
+    "src/"
   ]
 }
