@@ -24,18 +24,10 @@ module.exports = grammar({
 
         virtual: $ => seq('virtual', $._ids),
 
-        changeset: $ => seq($._metavariables, $.transformation),
+        changeset: $ => seq($.metavariables, $.transformation),
 
-        _metavariables: $ => choice($.unnamed_rule, $.named_rule),
-
-        unnamed_rule: $ => seq(
-            '@', '@',
-            repeat($._metadecl),
-            '@@'
-         ),
-
-        named_rule: $ => seq(
-            '@', $.rulename, '@',
+        metavariables: $ => seq(
+            '@', optional($.rulename), '@',
             repeat($._metadecl),
             '@@'
         ),
