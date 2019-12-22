@@ -10,9 +10,11 @@ module.exports = grammar({
 
     rules: {
         source_file: $ => seq(
-            repeat($._include_cocci),
+            optional($.header),
             repeat1($.changeset)
         ),
+
+        header: $ => repeat1($._include_cocci),
 
         _include_cocci: $ => choice(
             $.include,

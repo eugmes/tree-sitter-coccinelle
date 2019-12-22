@@ -10,7 +10,7 @@ Include file
 ---
 
 (source_file
-    (include (string))
+    (header (include (string)))
     (changeset (metavariables) (transformation))
 )
 
@@ -26,7 +26,7 @@ using "other string"
 ---
 
 (source_file
-    (using_file (string))
+    (header (using_file (string)))
     (changeset (metavariables) (transformation))
 )
 
@@ -42,7 +42,7 @@ using <path/to/iso/file>
 ---
 
 (source_file
-    (using_iso (pathToIsoFile))
+    (header (using_iso (pathToIsoFile)))
     (changeset (metavariables) (transformation))
 )
 
@@ -58,6 +58,6 @@ virtual id, another_id, ID
 ---
 
 (source_file
-    (virtual (id) (id) (id))
+    (header (virtual (id) (id) (id)))
     (changeset (metavariables) (transformation))
 )
