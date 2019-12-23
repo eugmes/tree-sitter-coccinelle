@@ -1,0 +1,65 @@
+======
+Simple
+======
+
+@script:python@
+@@
+
+---
+
+(source_file
+  (changeset
+    (script_metavariables (language))
+    (script_code)))
+
+=============
+Metavariables
+=============
+
+@script:ocaml@
+a << b.c;
+(d, p) << e.f;
+e;
+@@
+
+---
+
+(source_file
+  (changeset
+    (script_metavariables (language)
+      (script_metadecl (id) (id) (id))
+      (script_metadecl (id) (id) (id) (id))
+      (script_metadecl (id)))
+   (script_code)))
+
+==========
+Initialize
+==========
+
+@initialize:python@
+a << virtual.b;
+@@
+
+---
+
+(source_file
+  (changeset
+    (script_metavariables (language)
+      (script_virt_metadecl (id) (id)))
+    (script_code)))
+
+========
+Finalize
+========
+
+@finalize:python@
+a << virtual.b;
+@@
+
+---
+
+(source_file
+  (changeset
+    (script_metavariables (language)
+      (script_virt_metadecl (id) (id)))
+    (script_code)))

@@ -31,13 +31,55 @@ module.exports = grammar({
 
         virtual: $ => seq('virtual', $._ids),
 
-        changeset: $ => seq($.metavariables, $.transformation),
+        changeset: $ => choice(
+          seq($.metavariables, $.transformation),
+          seq($.script_metavariables, $.script_code)
+        ),
 
         metavariables: $ => seq(
             '@', optional($.rulename), '@',
             repeat($._metadecl),
             '@@'
         ),
+
+        script_metavariables: $ => choice(
+          $._script_metavariables,
+          $._finalize_metavariables,
+          $._initialize_metavariables,
+        ),
+
+        _script_metavariables: $=> seq(
+          '@', 'script:', $.language, optional($.rulename), // FIXME grammar has 'depends on' part, but it is also in rulename...
+          '@',
+          repeat($.script_metadecl),
+          '@@'
+        ),
+
+        _finalize_metavariables: $=> seq(
+          '@', 'finalize:', $.language, optional($.depends), '@',
+          repeat($.script_virt_metadecl),
+          '@@'
+        ),
+
+        _initialize_metavariables: $=> seq(
+          '@', 'initialize:', $.language, optional($.depends), '@',
+          repeat($.script_virt_metadecl),
+          '@@'
+        ),
+
+        language: $ => choice('python', 'ocaml'),
+
+        script_metadecl: $ => seq(
+          choice(
+            seq($.id, '<<', $.id, '.', $.id),
+            seq('(', $.id, ',', $.id, ')', '<<', $.id, '.', $.id), // ocaml only
+            // TODO add stuff with =, any examples?
+            $.id
+          ),
+          ';'
+        ),
+
+        script_virt_metadecl: $ => seq($.id, '<<', 'virtual', '.', $.id, ';'),
 
         rulename: $ => seq(
             $.id,
@@ -88,7 +130,7 @@ module.exports = grammar({
 
         dep_file: $ => seq('file', 'in', $.string),
 
-        iso: $ => seq('using', $.string, repeat(seq(',', $.string))),
+        iso: $ => seq('using', $.string, commaSep1($.string)),
 
         disable_iso: $ => seq('disable', $._ids),
 
@@ -134,6 +176,8 @@ module.exports = grammar({
 
         transformation: $ => /[^@]*/,
 
+        script_code: $ => /[^@]*/,
+
         _const: $ => choice(
             $.string,
             $.integer,
@@ -146,14 +190,18 @@ module.exports = grammar({
 
         dots: $ => '...',
 
-        pathToIsoFile: $ => /<.*>/,
+        pathToIsoFile: $ => /<[^>]*>/,
 
         id: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
-        _ids: $ => seq($.id, repeat(seq(',', $.id))),
+        _ids: $ => commaSep1($._pmid),
+
+        _pmid: $ => choice($.id, $.mid),
+
+        mid: $ => seq($.id, '.', $.id),
 
         comment: $ => token(choice(
-            seq('//', /(\\(.|\r?\n)|[^\\\n])*/),
+            seq('//', /[^\n]*/),
             seq(
                 '/*',
                 /[^*]*\*+([^/*][^*]*\*+)*/,
@@ -161,3 +209,7 @@ module.exports = grammar({
             )))
     }
 });
+
+function commaSep1(rule) {
+  return seq(rule, repeat(seq(',', rule)))
+}
