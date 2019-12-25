@@ -8,9 +8,10 @@ Simple
 ---
 
 (source_file
-  (changeset
-    (script_metavariables (language))
-    (script_code)))
+  changesets: (changesets
+    (script
+      metavariables: (script_metavariables language: (language))
+      script_code: (script_code))))
 
 =============
 Metavariables
@@ -25,12 +26,13 @@ e;
 ---
 
 (source_file
-  (changeset
-    (script_metavariables (language)
-      (script_metadecl (id) (id) (id))
-      (script_metadecl (id) (id) (id) (id))
-      (script_metadecl (id)))
-    (script_code)))
+  changesets: (changesets
+    (script
+      metavariables: (script_metavariables language: (language)
+        (script_metadecl id: (id) origin: (mid (id) (id)))
+        (script_metadecl id: (id) syntax_id: (id) origin: (mid (id) (id)))
+        (script_metadecl id: (id)))
+      script_code: (script_code))))
 
 ==========
 Initialize
@@ -43,10 +45,11 @@ a << virtual.b;
 ---
 
 (source_file
-  (changeset
-    (script_metavariables (language)
-      (script_virt_metadecl (id) (id)))
-    (script_code)))
+  changesets: (changesets
+    (script
+      metavariables: (script_metavariables language: (language)
+        (script_virt_metadecl id: (id) origin: (id)))
+      script_code: (script_code))))
 
 ========
 Finalize
@@ -59,7 +62,8 @@ a << virtual.b;
 ---
 
 (source_file
-  (changeset
-    (script_metavariables (language)
-      (script_virt_metadecl (id) (id)))
-    (script_code)))
+  changesets: (changesets
+    (script
+      metavariables: (script_metavariables language: (language)
+        (script_virt_metadecl id: (id) origin: (id)))
+      script_code: (script_code))))

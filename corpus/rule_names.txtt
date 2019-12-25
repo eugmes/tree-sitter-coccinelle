@@ -7,7 +7,11 @@ Unnamed rule
 
 ---
 
-(source_file (changeset (metavariables) (transformation)))
+(source_file
+  changesets: (changesets
+    (changeset
+      metavariables: (metavariables)
+      transformation: (transformation))))
 
 ===================
 Unnamed with spaces
@@ -18,7 +22,11 @@ Unnamed with spaces
 
 ---
 
-(source_file (changeset (metavariables) (transformation)))
+(source_file
+  changesets: (changesets
+    (changeset
+      metavariables: (metavariables)
+      transformation: (transformation))))
 
 ============
 Simple named
@@ -30,27 +38,11 @@ Simple named
 ---
 
 (source_file
- (changeset
-  (metavariables (rulename (id)))
-  (transformation)
- )
-)
-
-=======
-Extends
-=======
-
-@ rule extends other_rule @
-@@
-
----
-
-(source_file
- (changeset
-  (metavariables (rulename (id) (extends (id))))
-  (transformation)
- )
-)
+  changesets: (changesets
+    (changeset
+      metavariables: (metavariables
+        rule_name: (id))
+      transformation: (transformation))))
 
 ==============
 Simple depends
@@ -62,8 +54,9 @@ Simple depends
 ---
 
 (source_file
- (changeset
-  (metavariables (rulename (id) (depends (dep (id)))))
-  (transformation)
- )
-)
+  changesets: (changesets
+    (changeset
+      metavariables: (metavariables
+        rule_name: (id)
+        depends: (depends dep: (dep (id))))
+      transformation: (transformation))))

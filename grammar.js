@@ -10,59 +10,85 @@ module.exports = grammar({
 
     rules: {
         source_file: $ => seq(
-            optional($.header),
-            repeat1($.changeset)
+            field('header', optional($.header)),
+            field('changesets', $.changesets)
         ),
 
         header: $ => repeat1($._include_cocci),
 
         _include_cocci: $ => choice(
             $.include,
-            $.using_file,
-            $.using_iso,
+            $.using,
             $.virtual
         ),
 
-        include: $ => seq('#include', $.string),
+        include: $ => seq(
+          '#include',
+          field('file_name', $.string)
+        ),
 
-        using_file: $ => seq('using', $.string),
+        using: $ => seq(
+          'using',
+          field('file_name', choice($.string, $.pathToIsoFile))
+        ),
 
-        using_iso: $ => seq('using', $.pathToIsoFile),
+        virtual: $ => seq(
+          'virtual',
+          field('ids', $.id_list),
+        ),
 
-        virtual: $ => seq('virtual', $._ids),
+        changesets: $ => repeat1(choice($.script, $.changeset)),
 
-        changeset: $ => choice(
-          seq($.metavariables, $.transformation),
-          seq($.script_metavariables, $.script_code)
+        changeset: $ => seq(
+          field('metavariables', $.metavariables),
+          field('transformation', $.transformation)
+        ),
+
+        script: $ => seq(
+          field('metavariables', $.script_metavariables),
+          field('script_code', $.script_code)
         ),
 
         metavariables: $ => seq(
-            '@', optional($.rulename), '@',
-            repeat($._metadecl),
+            '@',
+            field('rule_name', optional($.id)),
+            //field('extends', optional($.extends)),
+            field('depends', optional($.depends)),
+            field('using', optional($.iso)),
+            field('disable', optional($.disable_iso)),
+            field('exists', optional($.exists)),
+            field('rule_kind', optional($.rule_kind)),
+            '@',
+            field('declarations', optional($.declarations)),
             '@@'
         ),
 
+        declarations: $ => repeat1($._metadecl),
+
         script_metavariables: $ => choice(
           $._script_metavariables,
-          $._finalize_metavariables,
-          $._initialize_metavariables,
+          $._virt_metavariables
         ),
 
-        _script_metavariables: $=> seq(
-          '@', 'script:', $.language, optional($.rulename), // FIXME grammar has 'depends on' part, but it is also in rulename...
+        _script_metavariables: $ => seq(
+          '@',
+          field('kind', 'script'),
+          ':', // Check if : is part of the token
+          field('language', $.language),
+          field('rule_name', optional($.id)),
+          field('depends', optional($.depends)),
           '@',
           repeat($.script_metadecl),
           '@@'
         ),
 
-        _finalize_metavariables: $=> seq(
-          '@', 'finalize:', $.language, optional($.depends), '@',
-          repeat($.script_virt_metadecl),
-          '@@'
-        ),
-
-        _initialize_metavariables: $=> seq(
-          '@', 'initialize:', $.language, optional($.depends), '@',
+        _virt_metavariables: $=> seq(
+          '@',
+          field('kind', choice('initialize', 'finalize')),
+          ':',
+          field('language', $.language),
+          field('depends', optional($.depends)),
+          '@',
           repeat($.script_virt_metadecl),
           '@@'
         ),
@@ -71,34 +97,32 @@ module.exports = grammar({
 
         script_metadecl: $ => seq(
           choice(
-            seq($.id, '<<', $.id, '.', $.id),
-            seq('(', $.id, ',', $.id, ')', '<<', $.id, '.', $.id), // ocaml only
+            seq(field('id', $.id), '<<', field('origin', $.mid)),
+            seq('(', field('id', $.id), ',', field('syntax_id', $.id), ')', '<<', field('origin', $.mid)), // FIXME ocaml only
             // TODO add stuff with =, any examples?
-            $.id
+            field('id', $.id)
           ),
           ';'
         ),
 
-        script_virt_metadecl: $ => seq($.id, '<<', 'virtual', '.', $.id, ';'),
-
-        rulename: $ => seq(
-            $.id,
-            optional($.extends),
-            optional($.depends),
-            optional($.iso),
-            optional($.disable_iso),
-            optional($.exists),
-            optional($.rulekind)
+        script_virt_metadecl: $ => seq(
+          field('id', $.id),
+          '<<', 'virtual', '.',
+          field('origin', $.id),
+          ';'
         ),
 
-        extends: $ => seq('extends', $.id),
+        extends: $ => seq(
+          'extends',
+          field('name', $.id)
+        ),
 
         scope: $ => choice('exists', 'forall'),
 
         depends: $ => seq(
-            optional(seq('depends', 'on')),
-            optional($.scope),
-            $.dep
+            'depends', 'on',
+            field('scope', optional($.scope)),
+            field('dep', $.dep),
         ),
 
         dep: $ => choice(
@@ -113,69 +137,121 @@ module.exports = grammar({
         dep_not: $ => seq(
             '!',
             choice(
-                $.id,
-                seq('(', $.dep, ')')
+                field('dep', $.id),
+                seq('(', field('dep', $.dep), ')')
             )
         ),
 
-        dep_cond: $ => choice(
-            seq('ever', $.id),
-            seq('never', $.id),
+        dep_cond: $ => seq(
+          field('condition', choice('ever', 'never')),
+          field('name', $.id)
         ),
 
         dep_bin_op: $ => choice(
-            prec.left(2, seq($.dep, '&&', $.dep)),
-            prec.left(1, seq($.dep, '||', $.dep))
+            prec.left(2, seq(
+              field('left', $.dep),
+              field('operator', '&&'),
+              field('right', $.dep))),
+            prec.left(1, seq(
+              field('left', $.dep),
+              field('operator', '||'),
+              field('right', $.dep)))
         ),
 
-        dep_file: $ => seq('file', 'in', $.string),
+        dep_file: $ => seq(
+          'file',
+          'in',
+          field('file_name', $.string)
+        ),
 
-        iso: $ => seq('using', $.string, commaSep1($.string)),
+        iso: $ => seq('using',
+          field('file_names', commaSep1($.string))
+        ),
 
-        disable_iso: $ => seq('disable', $._ids),
+        disable_iso: $ => seq(
+          'disable',
+          field('names', commaSep1($.id))
+        ),
 
         exists: $ => choice('exists', 'forall'),
 
-        rulekind: $ => choice('expression', 'identifier', 'type'),
+        rule_kind: $ => choice('expression', 'identifier', 'type'),
 
         _metadecl: $ => seq(choice(
-            $.simple_metadecl,
-            $.parameter_list_id,
-            $.parameter_list_const,
-            $.identifier_list_id,
-            $.identifier_list_const
-            // TODO add the rest
+            $.metavariable,
+            $.fresh_identifier,
+            $.parameter,
+            $.parameter_list,
+            $.identifier,
+            $.identifier_list,
+            $.type,
+            $.statement,
+            $.statement_list,
+            $.declaration,
+            $.field,
+            $.field_list,
+            $.initializer,
+            $.initializer_list,
+            $.typedef,
+            $.attribute_name,
+            $.declarer_name,
+            $.declarer,
+            $.iterator_name,
+            $.iterator,
+            $.idexpression,
+            $.expression,
+            $.expression_list,
+            // TODO $.typed,
+            $.constant,
+            $.position,
+            $.symbol,
+            $.format,
+            $.format_list,
+            $.assignment_oerator,
+            $.binary_operator
         ), ';'),
 
-        simple_metadecl: $ => seq($._metadecl_kind, $._ids),
+        metavariable: $ => seq('metavariable', $.ids),
+        fresh_identifier: $ => seq('fresh', 'identifier', $.ids), // FIXME this one should allow expressions
+        parameter: $ => seq('parameter', $.ids),
+        parameter_list: $ => seq('parameter', 'list', optional($.array_decl), $.ids),
+        identifier: $ => seq('identifier', commaSep1($._pmid_with_regexp_virt_or_not_eq)),
+        identifier_list: $ => seq('identifier', 'list', optional($.array_decl), $.ids),
+        type: $ => seq('type', $.ids),
+        statement: $ => seq('statement', $.ids),
+        statement_list: $ => seq('statement', 'list', $.ids),
+        declaration: $ => seq('declaration', $.ids),
+        field: $ => seq('field', $.ids),
+        field_list: $ => seq('field', 'list', optional($.array_decl), $.ids), // FIXME array_decl is not in the official grammar
+        initializer: $ => seq(choice('initializer', 'initialiser'), $.ids),
+        initializer_list: $ => seq(choice('initializer', 'initialiser'), 'list', optional($.array_decl), $.ids), // FIXME array_decl is not in the official grammar
+        typedef: $ => seq('typedef', $.ids),
+        attribute_name: $ => seq('attribute', 'name', $.ids),
+        declarer_name: $ => seq('declarer', 'name', $.ids),
+        declarer: $ => seq('declarer', commaSep1($._pmid_with_regexp_or_not_eq)), // FIXME check if plain pmid is allowed
+        iterator_name: $ => seq('iterator', 'name', $.ids),
+        iterator: $ => seq('iterator', commaSep1($._pmid_with_regexp_or_not_eq)), // FIXME see above
+        idexpression: $ => seq(optional($.locality), 'idexpression', optional($._idexp_type), commaSep1($._pmid_with_opt_not_eq)),
+        // FIXME expression allows other comparison operators...
+        expression: $ => seq('expression', optional($._exp_type), commaSep1($._pmid_with_opt_not_ceq)), // FIXME constant only allowed when type is not used
+        expression_list: $ => seq('expression', 'list', optional($.array_decl), $.ids),
+        // TODO typed,
+        constant: $ => seq('constant', /* TODO optional($._const_type),*/ commaSep1($._pmid_with_opt_not_eq)),
+        position: $ => seq('position', optional('any'), commaSep1($._pmid_with_opt_not_eq)),
+        symbol: $ => seq('symbol', $.ids),
+        format: $ => seq('format', $.ids),
+        format_list: $ => seq('format', 'list', $.array_decl, $.ids),
+        assignment_oerator: $ => seq('assignment', 'operator', commaSep1($._assignopdecl)),
+        binary_operator: $ => seq('binary', 'operator', commaSep1($._binopdecl)),
 
-        _metadecl_kind: $ => choice(
-            seq('fresh', 'identifier'),
-            seq('parameter', optional('list')),
-            seq('identifier', optional('list')),
-            'type',
-            seq('statement', optional('list')),
-            'declaration',
-            seq('field', optional('list')),
-            seq('initializer', optional('list')),
-            seq('initialiser', optional('list')),
-            'typedef',
-            seq('attribute', 'name'),
-            seq('declarer', 'name'),
-            seq('iterator', 'name'),
-            seq('expression', 'list'),
-            'symbol',
-            'format'
-        ),
+        _array_size_spec: $ => seq(
+          '[',
+          choice($.id, $._const),
+          ']'),
 
-        parameter_list_id: $ => seq('parameter', 'list', '[', $.id, ']', $._ids),
-        parameter_list_const: $ => seq('parameter', 'list', '[', $._const, ']', $._ids),
+        transformation: $ => /(\S@|[^@])*/,
 
-        identifier_list_id: $ => seq('identifier', 'list', '[', $.id, ']', $._ids),
-        identifier_list_const: $ => seq('identifier', 'list', '[', $._const, ']', $._ids),
-
-        transformation: $ => /[^@]*/,
-
+        // FIXME: Allow @ inside scripts somehow
         script_code: $ => /[^@]*/,
 
         _const: $ => choice(
@@ -186,6 +262,8 @@ module.exports = grammar({
 
         string: $ => /"[^"]*"/,
 
+        regexp: $ => $.string, // FIXME
+
         integer: $ => /[0-9]+/,
 
         dots: $ => '...',
@@ -194,9 +272,120 @@ module.exports = grammar({
 
         id: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
-        _ids: $ => commaSep1($._pmid),
+        id_list: $ => commaSep1($.id),
+
+        ids: $ => commaSep1($._pmid),
 
         _pmid: $ => choice($.id, $.mid),
+
+        _id_or_cst: $ => choice($.id, $.integer),
+
+        pmid_with_regexp: $ => seq(
+          field('id', $._pmid),
+          field('operator', choice('=~', '!~')),
+          field('regexp', $.regexp)
+        ),
+
+        pmid_with_not_eq: $ => seq(
+          field('id', $._pmid),
+          '!=',
+          field('value', choice(
+            $._pmid,
+            seq('{', commaSep1($._pmid), '}')
+          ))
+        ),
+
+        _pmid_with_opt_not_eq: $ => choice($._pmid, $.pmid_with_not_eq),
+
+        pmid_with_not_ceq: $ => seq(
+          $._pmid,
+          '!=',
+          choice(
+            $._id_or_cst,
+            seq('{', commaSep1($._id_or_cst), '}')
+          )
+        ),
+
+        _pmid_with_opt_not_ceq: $ => choice($._pmid, $.pmid_with_not_ceq),
+
+        _pmid_with_regexp_virt_or_not_eq: $ => choice(
+          $._pmid,
+          $.pmid_with_regexp,
+          $.pmid_with_not_eq
+        ),
+
+        _pmid_with_regexp_or_not_eq: $ => choice(
+          $._pmid,
+          $.pmid_with_regexp,
+          $.pmid_with_virt,
+          $.pmid_with_not_eq
+        ),
+
+        pmid_with_not_eq_mid: $ => seq(
+          $._pmid,
+          andAndList($.script_constraint) // FIXME
+        ),
+
+        // TODO rename?
+        pmid_with_virt: $ => seq('virtual', '.', $.id),
+
+        _idexp_type: $ => choice(
+          // TODO $.ctype,
+          // TODO seq($._ctypes, repeat('*')),
+          repeat1('*')
+        ),
+
+        _exp_type: $ => choice(
+          repeat1('*'),
+          seq('enum', repeat('*')),
+          seq('struct', repeat('*')),
+          seq('union', repeat('*')),
+        ),
+
+        /* TODO
+        _const_type: $ => choice(
+          $.ctype,
+          seq($._ctypes, repeat('*'))
+        ),
+        */
+
+        locality: $ => choice('local', 'global'),
+
+        array_decl: $ => seq(
+          '[',
+          choice($._pmid, $._const),
+          ']'
+        ),
+
+        _assignopdecl: $ => seq($.id, optional(seq('=', $._assignop_constraint))),
+
+        _assignop_constraint: $ => choice(
+          $.assign_op,
+          seq('{', commaSep1($.assign_op), '}')
+        ),
+
+        assign_op: $ => choice('=', '-=', '+=', '/=', '%=', '&=', '|=', '^=', '<<=', '>>='),
+
+        _binopdecl: $ => seq($.id, optional(seq('=', $._binop_constraint))),
+
+        _binop_constraint: $ => choice(
+          $.bin_op,
+          seq('{', commaSep1($.bin_op), '}')
+        ),
+
+        script_constraint: $ => choice(
+          seq('!=', $.mid),
+          seq('!=', '{', commaSep1($.mid), '}')
+          // TODO seq(':', 'script:', $.language, commaSep1($.mid), )
+        ),
+
+        bin_op: $ => choice(
+          '*', '/', '%', '+', '-',
+          '<<', '>>',
+          'ˆ', '&', '|',
+          '<', '>', '<=', '>=', '==', '!=',
+          '&&', '||'
+        ),
 
         mid: $ => seq($.id, '.', $.id),
 
@@ -212,4 +401,8 @@ module.exports = grammar({
 
 function commaSep1(rule) {
   return seq(rule, repeat(seq(',', rule)))
+}
+
+function andAndList(rule) {
+  return seq(rule, repeat(seq('&&', rule)))
 }
