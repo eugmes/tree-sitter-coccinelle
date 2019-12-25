@@ -30,7 +30,7 @@ e;
       (script_metadecl (id) (id) (id))
       (script_metadecl (id) (id) (id) (id))
       (script_metadecl (id)))
-   (script_code)))
+    (script_code)))
 
 ==========
 Initialize
