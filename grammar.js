@@ -240,8 +240,8 @@ module.exports = grammar({
         constant: $ => seq('constant', optional($.type_decl), optional(seq('[', ']')), commaSep1($._pmid_with_opt_not_eq)),
         position: $ => seq('position', optional('any'), commaSep1($._pmid_with_opt_not_eq)),
         symbol: $ => seq('symbol', $.ids),
-        format: $ => seq('format', $.ids),
-        format_list: $ => seq('format', 'list', $.array_decl, $.ids),
+        format: $ => seq('format', commaSep1($._pmid_with_regexp_or_not_eq)),
+        format_list: $ => seq('format', 'list', optional($.array_decl), $.ids),
         assignment_oerator: $ => seq('assignment', 'operator', commaSep1($._assignopdecl)),
         binary_operator: $ => seq('binary', 'operator', commaSep1($._binopdecl)),
 
