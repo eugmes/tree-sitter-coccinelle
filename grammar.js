@@ -11,7 +11,7 @@ module.exports = grammar({
     rules: {
         source_file: $ => seq(
             field('header', optional($.header)),
-            field('changesets', $.changesets)
+            field('changesets', optional($.changesets))
         ),
 
         header: $ => repeat1($._include_cocci),
