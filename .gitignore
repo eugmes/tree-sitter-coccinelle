@@ -3,3 +3,4 @@ build
 src/
 index.js
 binding.gyp
+*.wasm
