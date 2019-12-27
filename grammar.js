@@ -231,12 +231,13 @@ module.exports = grammar({
         declarer: $ => seq('declarer', commaSep1($._pmid_with_regexp_or_not_eq)), // FIXME check if plain pmid is allowed
         iterator_name: $ => seq('iterator', 'name', $.ids),
         iterator: $ => seq('iterator', commaSep1($._pmid_with_regexp_or_not_eq)), // FIXME see above
-        idexpression: $ => seq(optional($.locality), 'idexpression', optional($.type_decl), commaSep1($._pmid_with_opt_not_eq)),
+        idexpression: $ => seq(optional($.locality), 'idexpression', optional($._idexp_type_decl), commaSep1($._pmid_with_opt_not_eq)),
         // FIXME expression allows other comparison operators...
         expression: $ => seq('expression', optional($._exp_type), commaSep1($._pmid_with_opt_not_ceq)), // FIXME constant only allowed when type is not used
         expression_list: $ => seq('expression', 'list', optional($.array_decl), $.ids),
+        // TODO name those []?
         typed: $ => seq($.type_decl, optional(seq('[', ']')), commaSep1($._pmid_with_opt_not_ceq)),
-        constant: $ => seq('constant', optional($.type_decl), commaSep1($._pmid_with_opt_not_eq)),
+        constant: $ => seq('constant', optional($.type_decl), optional(seq('[', ']')), commaSep1($._pmid_with_opt_not_eq)),
         position: $ => seq('position', optional('any'), commaSep1($._pmid_with_opt_not_eq)),
         symbol: $ => seq('symbol', $.ids),
         format: $ => seq('format', $.ids),
@@ -338,6 +339,11 @@ module.exports = grammar({
         type_decl: $ => choice(
           $.ctype,
           seq('{', $.ctypes, '}', repeat('*'))
+        ),
+
+        _idexp_type_decl: $ => choice(
+          repeat1('*'),
+          $.type_decl
         ),
 
         locality: $ => choice('local', 'global'),
