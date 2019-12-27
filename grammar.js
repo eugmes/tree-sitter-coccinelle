@@ -97,7 +97,7 @@ module.exports = grammar({
 
         script_metadecl: $ => seq(
           choice(
-            seq(field('id', $.id), '<<', field('origin', $.mid)),
+            seq(field('id', $.id), '<<', field('origin', $.mid), optional($._script_init)),
             seq('(', field('id', $.id), ',', field('syntax_id', $.id), ')', '<<', field('origin', $.mid)), // FIXME ocaml only
             // TODO add stuff with =, any examples?
             field('id', $.id)
@@ -290,6 +290,12 @@ module.exports = grammar({
         _simple_init: $ => choice($._pmid, $.string),
 
         _id_init: $ => seq($._simple_init, repeat(seq('##', $._simple_init))),
+
+        _script_init: $ => seq('=',
+          field('init',
+            choice(
+              $.string,
+              seq('[', ']')))),
 
         pmid_with_regexp: $ => seq(
           field('id', $._pmid),
