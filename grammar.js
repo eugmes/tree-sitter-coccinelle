@@ -249,7 +249,7 @@ module.exports = grammar({
           choice($.id, $._const),
           ']'),
 
-        transformation: $ => /(\S@|[^@])*/,
+        transformation: $ => /([^\n\r]@|[^@])*/,
 
         script_code: $ => /([^\n\r]@|[^@])*/,
 
