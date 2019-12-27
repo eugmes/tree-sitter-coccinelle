@@ -201,7 +201,7 @@ module.exports = grammar({
             $.idexpression,
             $.expression,
             $.expression_list,
-            // TODO $.typed,
+            $.typed,
             $.constant,
             $.position,
             $.symbol,
@@ -231,12 +231,12 @@ module.exports = grammar({
         declarer: $ => seq('declarer', commaSep1($._pmid_with_regexp_or_not_eq)), // FIXME check if plain pmid is allowed
         iterator_name: $ => seq('iterator', 'name', $.ids),
         iterator: $ => seq('iterator', commaSep1($._pmid_with_regexp_or_not_eq)), // FIXME see above
-        idexpression: $ => seq(optional($.locality), 'idexpression', optional($._idexp_type), commaSep1($._pmid_with_opt_not_eq)),
+        idexpression: $ => seq(optional($.locality), 'idexpression', optional($.type_decl), commaSep1($._pmid_with_opt_not_eq)),
         // FIXME expression allows other comparison operators...
         expression: $ => seq('expression', optional($._exp_type), commaSep1($._pmid_with_opt_not_ceq)), // FIXME constant only allowed when type is not used
         expression_list: $ => seq('expression', 'list', optional($.array_decl), $.ids),
-        // TODO typed,
-        constant: $ => seq('constant', /* TODO optional($._const_type),*/ commaSep1($._pmid_with_opt_not_eq)),
+        typed: $ => seq($.type_decl, optional(seq('[', ']')), commaSep1($._pmid_with_opt_not_eq)),
+        constant: $ => seq('constant', optional($.type_decl), commaSep1($._pmid_with_opt_not_eq)),
         position: $ => seq('position', optional('any'), commaSep1($._pmid_with_opt_not_eq)),
         symbol: $ => seq('symbol', $.ids),
         format: $ => seq('format', $.ids),
@@ -329,12 +329,6 @@ module.exports = grammar({
         // TODO rename?
         pmid_with_virt: $ => seq('virtual', '.', $.id),
 
-        _idexp_type: $ => choice(
-          // TODO $.ctype,
-          // TODO seq($._ctypes, repeat('*')),
-          repeat1('*')
-        ),
-
         _exp_type: $ => choice(
           repeat1('*'),
           seq('enum', repeat('*')),
@@ -342,12 +336,10 @@ module.exports = grammar({
           seq('union', repeat('*')),
         ),
 
-        /* TODO
-        _const_type: $ => choice(
+        type_decl: $ => choice(
           $.ctype,
-          seq($._ctypes, repeat('*'))
+          seq('{', $.ctypes, '}', repeat('*'))
         ),
-        */
 
         locality: $ => choice('local', 'global'),
 
@@ -386,6 +378,45 @@ module.exports = grammar({
           '<', '>', '<=', '>=', '==', '!=',
           '&&', '||'
         ),
+
+        ctypes: $ => commaSep1($.ctype),
+
+        ctype: $ => choice(
+            seq(optional($.const_vol), $.generic_ctype, repeat('*')),
+            seq(optional($.const_vol), 'void', repeat1('*')),
+            $.ctype_list
+        ),
+
+        ctype_list: $ => seq('(', $.ctype, repeat(seq('|', $.ctype)), ')'),
+
+        const_vol: $ => choice('const', 'volatile'),
+
+        generic_ctype: $ => choice(
+          $.ctype_qualif,
+          seq(optional($.ctype_qualif), 'char'),
+          seq(optional($.ctype_qualif), 'short'),
+          seq(optional($.ctype_qualif), 'short', 'int'),
+          seq(optional($.ctype_qualif), 'int'),
+          seq(optional($.ctype_qualif), 'long'),
+          seq(optional($.ctype_qualif), 'long', 'int'),
+          seq(optional($.ctype_qualif), 'long', 'long', 'int'),
+          'double',
+          seq('long', 'double'),
+          'float',
+          seq('long', 'double', 'complex'),
+          seq('double', 'complex'),
+          seq('float', 'complex'),
+          'size_t',
+          'ssize_t',
+          'ptrdiff_t',
+          // TODO seq('enum', $.id, '{', '}')
+          $.id,
+          seq(choice('struct', 'union'), $.id), // TODO struct_decl_list
+          // TODO seq('typeof', '(', $.exp, ')'),
+          seq('typeof', '(', $.ctype, ')')
+        ),
+
+        ctype_qualif: $ => choice('unsigned', 'signed'),
 
         mid: $ => seq($.id, '.', $.id),
 
