@@ -214,17 +214,17 @@ module.exports = grammar({
         metavariable: $ => seq('metavariable', $.ids),
         fresh_identifier: $ => seq('fresh', 'identifier', commaSep1($._id_with_opt_init)),
         parameter: $ => seq('parameter', $.ids),
-        parameter_list: $ => seq('parameter', 'list', optional($.array_decl), $.ids),
+        parameter_list: $ => seq('parameter', 'list', optional($.length_decl), $.ids),
         identifier: $ => seq('identifier', commaSep1($._pmid_with_regexp_virt_or_not_eq)),
-        identifier_list: $ => seq('identifier', 'list', optional($.array_decl), $.ids),
+        identifier_list: $ => seq('identifier', 'list', optional($.length_decl), $.ids),
         type: $ => seq('type', commaSep1($._pmid_with_type)),
         statement: $ => seq('statement', $.ids),
-        statement_list: $ => seq('statement', 'list', optional($.array_decl), $.ids),
+        statement_list: $ => seq('statement', 'list', optional($.length_decl), $.ids),
         declaration: $ => seq('declaration', $.ids),
         field: $ => seq('field', $.ids),
-        field_list: $ => seq('field', 'list', optional($.array_decl), $.ids), // FIXME array_decl is not in the official grammar
+        field_list: $ => seq('field', 'list', optional($.length_decl), $.ids), // FIXME length_decl is not in the official grammar
         initializer: $ => seq(choice('initializer', 'initialiser'), $.ids),
-        initializer_list: $ => seq(choice('initializer', 'initialiser'), 'list', optional($.array_decl), $.ids), // FIXME array_decl is not in the official grammar
+        initializer_list: $ => seq(choice('initializer', 'initialiser'), 'list', optional($.length_decl), $.ids), // FIXME length_decl is not in the official grammar
         typedef: $ => seq('typedef', $.ids),
         attribute_name: $ => seq('attribute', 'name', $.ids),
         declarer_name: $ => seq('declarer', 'name', $.ids),
@@ -234,14 +234,14 @@ module.exports = grammar({
         idexpression: $ => seq(optional($.locality), 'idexpression', optional($._idexp_type_decl), commaSep1($._pmid_with_opt_not_eq)),
         // FIXME expression allows other comparison operators...
         expression: $ => seq('expression', optional($._exp_type), commaSep1($._pmid_with_opt_not_ceq)), // FIXME constant only allowed when type is not used
-        expression_list: $ => seq('expression', 'list', optional($.array_decl), $.ids),
+        expression_list: $ => seq('expression', 'list', optional($.length_decl), $.ids),
         // TODO name those []?
         typed: $ => seq($.type_decl, optional(seq('[', ']')), commaSep1($._pmid_with_opt_not_ceq)),
         constant: $ => seq('constant', optional($.type_decl), optional(seq('[', ']')), commaSep1($._pmid_with_regexp_or_not_eq)),
         position: $ => seq('position', optional('any'), commaSep1($._pmid_with_opt_not_eq)),
         symbol: $ => seq('symbol', $.ids),
         format: $ => seq('format', commaSep1($._pmid_with_regexp_or_not_eq)),
-        format_list: $ => seq('format', 'list', optional($.array_decl), $.ids),
+        format_list: $ => seq('format', 'list', optional($.length_decl), $.ids),
         assignment_oerator: $ => seq('assignment', 'operator', commaSep1($._assignopdecl)),
         binary_operator: $ => seq('binary', 'operator', commaSep1($._binopdecl)),
 
@@ -376,11 +376,13 @@ module.exports = grammar({
 
         locality: $ => choice('local', 'global'),
 
-        array_decl: $ => seq(
+        length_decl: $ => seq(
           '[',
-          choice($._pmid, $._const),
+          choice($._pmid, $._const, $.range),
           ']'
         ),
+
+        range: $ => seq($.id, '=', '{', $.integer, $.dots, $.integer, '}'),
 
         _assignopdecl: $ => seq($.id, optional(seq('=', $._assignop_constraint))),
 
