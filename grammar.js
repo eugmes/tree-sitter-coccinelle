@@ -217,7 +217,7 @@ module.exports = grammar({
         parameter_list: $ => seq('parameter', 'list', optional($.array_decl), $.ids),
         identifier: $ => seq('identifier', commaSep1($._pmid_with_regexp_virt_or_not_eq)),
         identifier_list: $ => seq('identifier', 'list', optional($.array_decl), $.ids),
-        type: $ => seq('type', $.ids),
+        type: $ => seq('type', commaSep1($._pmid_with_type)),
         statement: $ => seq('statement', $.ids),
         statement_list: $ => seq('statement', 'list', $.ids),
         declaration: $ => seq('declaration', $.ids),
@@ -345,6 +345,17 @@ module.exports = grammar({
 
         // TODO rename?
         pmid_with_virt: $ => seq('virtual', '.', $.id),
+
+        // TODO add regexp matches
+        _pmid_with_type: $ => seq(
+          $._pmid,
+          optional(seq(
+            choice('=', '!='),
+            choice(
+              $.ctype,
+              seq('{', commaSep1($.ctype), '}')
+            )
+        ))),
 
         _exp_type: $ => choice(
           repeat1('*'),
