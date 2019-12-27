@@ -12,7 +12,8 @@
     "test": "tree-sitter test && tree-sitter parse examples/*/ok/* --quiet --time",
     "prepare": "npm run build",
     "prepublishOnly": "npm test",
-    "web-ui": "tree-sitter build-wasm && tree-sitter web-ui"
+    "web-ui": "tree-sitter build-wasm && tree-sitter web-ui",
+    "movefiles": "./movefiles.sh"
   },
   "author": "Ievgenii Meshcheriakov",
   "license": "ISC",
