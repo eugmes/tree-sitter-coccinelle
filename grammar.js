@@ -235,7 +235,7 @@ module.exports = grammar({
         // FIXME expression allows other comparison operators...
         expression: $ => seq('expression', optional($._exp_type), commaSep1($._pmid_with_opt_not_ceq)), // FIXME constant only allowed when type is not used
         expression_list: $ => seq('expression', 'list', optional($.array_decl), $.ids),
-        typed: $ => seq($.type_decl, optional(seq('[', ']')), commaSep1($._pmid_with_opt_not_eq)),
+        typed: $ => seq($.type_decl, optional(seq('[', ']')), commaSep1($._pmid_with_opt_not_ceq)),
         constant: $ => seq('constant', optional($.type_decl), commaSep1($._pmid_with_opt_not_eq)),
         position: $ => seq('position', optional('any'), commaSep1($._pmid_with_opt_not_eq)),
         symbol: $ => seq('symbol', $.ids),
