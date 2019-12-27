@@ -58,5 +58,5 @@ Simple depends
     (changeset
       metavariables: (metavariables
         rule_name: (id)
-        depends: (depends dep: (dep (id))))
+        (depends dep: (dep (id))))
       transformation: (transformation))))

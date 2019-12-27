@@ -52,12 +52,12 @@ module.exports = grammar({
         metavariables: $ => seq(
             '@',
             field('rule_name', optional($.id)),
-            //field('extends', optional($.extends)),
-            field('depends', optional($.depends)),
-            field('using', optional($.iso)),
-            field('disable', optional($.disable_iso)),
-            field('exists', optional($.exists)),
-            field('rule_kind', optional($.rule_kind)),
+            optional($.extends),
+            optional($.depends),
+            optional($.iso),
+            optional($.disable_iso),
+            optional($.exists),
+            optional($.rule_kind),
             '@',
             field('declarations', optional($.declarations)),
             '@@'
