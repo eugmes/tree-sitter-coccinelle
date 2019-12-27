@@ -408,9 +408,9 @@ module.exports = grammar({
           'size_t',
           'ssize_t',
           'ptrdiff_t',
-          // TODO seq('enum', $.id, '{', '}')
-          $.id,
-          seq(choice('struct', 'union'), $.id), // TODO struct_decl_list
+          // TODO seq('enum', $._pmid, '{', '}')
+          $._pmid,
+          seq(choice('struct', 'union'), $._pmid), // TODO struct_decl_list
           // TODO seq('typeof', '(', $.exp, ')'),
           seq('typeof', '(', $.ctype, ')')
         ),
