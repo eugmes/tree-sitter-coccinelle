@@ -11,7 +11,8 @@
     "build": "tree-sitter generate && node-gyp rebuild",
     "test": "tree-sitter test",
     "prepare": "npm run build",
-    "prepublishOnly": "npm test"
+    "prepublishOnly": "npm test",
+    "web-ui": "tree-sitter build-wasm && tree-sitter web-ui"
   },
   "author": "Ievgenii Meshcheriakov",
   "license": "ISC",
