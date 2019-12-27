@@ -212,7 +212,7 @@ module.exports = grammar({
         ), ';'),
 
         metavariable: $ => seq('metavariable', $.ids),
-        fresh_identifier: $ => seq('fresh', 'identifier', $.ids), // FIXME this one should allow expressions
+        fresh_identifier: $ => seq('fresh', 'identifier', commaSep1($._id_with_opt_init)),
         parameter: $ => seq('parameter', $.ids),
         parameter_list: $ => seq('parameter', 'list', optional($.array_decl), $.ids),
         identifier: $ => seq('identifier', commaSep1($._pmid_with_regexp_virt_or_not_eq)),
@@ -279,6 +279,17 @@ module.exports = grammar({
         _pmid: $ => choice($.id, $.mid),
 
         _id_or_cst: $ => choice($.id, $.integer),
+
+        _id_with_opt_init: $ => choice(
+          $._pmid,
+          $.id_with_init
+        ),
+
+        id_with_init: $ => seq($._pmid, '=', $._id_init),
+
+        _simple_init: $ => choice($._pmid, $.string),
+
+        _id_init: $ => seq($._simple_init, repeat(seq('##', $._simple_init))),
 
         pmid_with_regexp: $ => seq(
           field('id', $._pmid),
