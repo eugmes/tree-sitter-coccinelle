@@ -251,8 +251,7 @@ module.exports = grammar({
 
         transformation: $ => /(\S@|[^@])*/,
 
-        // FIXME: Allow @ inside scripts somehow
-        script_code: $ => /[^@]*/,
+        script_code: $ => /([^\n\r]@|[^@])*/,
 
         _const: $ => choice(
             $.string,
