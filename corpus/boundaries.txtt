@@ -1,0 +1,75 @@
+====================
+Changeset Boundaries
+====================
+
+@@
+@@
+
+@@
+@@
+
+---
+
+(source_file
+  (changesets
+    (changeset (metavariables) (transformation))
+    (changeset (metavariables) (transformation))
+  )
+)
+
+=================
+Script Boundaries
+=================
+
+@script:python@
+@@
+
+@script:python@
+@@
+
+---
+
+(source_file
+  (changesets
+    (script (script_metavariables (pure_ident)) (script_code))
+    (script (script_metavariables (pure_ident)) (script_code))
+  )
+)
+
+=========================
+Script/Changeset Boundary
+=========================
+
+@script:python@
+@@
+
+@@
+@@
+
+---
+
+(source_file
+  (changesets
+    (script (script_metavariables (pure_ident)) (script_code))
+    (changeset (metavariables) (transformation))
+  )
+)
+
+=========================
+Changeset/Script Boundary
+=========================
+
+@@
+@@
+
+@script:python@
+@@
+
+---
+
+(source_file
+  (changesets
+    (changeset (metavariables) (transformation))
+    (script (script_metavariables (pure_ident)) (script_code))
+  )
+)
