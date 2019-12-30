@@ -55,7 +55,7 @@ expect.extend({
     if (firstError) {
       const start = positionForOffset(content, firstError.startIndex);
       const end = positionForOffset(content, firstError.endIndex);
-      const nodeName = firstError.isMissing ? `MISSING ${firstError.type}` : firstError.type;
+      const nodeName = firstError.isMissing() ? `MISSING ${firstError.type}` : firstError.type;
       const message = `Parse error (${nodeName} [${start.row}:${start.col}] - [${end.row}:${end.col}])`;
 
       /* Make Jest show location of the parse error instead of location in this file. */
