@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "tree-sitter generate && node-gyp rebuild",
-    "test": "tree-sitter test && tree-sitter parse examples/*/ok/* --quiet --time",
+    "test": "tree-sitter test && jest --silent",
     "prepare": "",
     "install": "npm run build",
     "prepublishOnly": "npm test",
@@ -23,6 +23,8 @@
     "nan": "^2.14.0"
   },
   "devDependencies": {
+    "jest": "^24.9.0",
+    "tree-sitter": "^0.15.14",
     "tree-sitter-cli": "^0.15.14"
   },
   "files": [
