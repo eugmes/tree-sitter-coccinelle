@@ -3,6 +3,13 @@ module.exports = grammar({
 
   word: $ => $.pure_ident,
 
+  externals: $ => [
+    /* Tree-sitter does not support lookahead for regexps, so code blocks
+     * have to be implemented using an external scanner.
+     */
+    $._code_block,
+  ],
+
   extras: $ => [
     /\s|\\\r?\n/,
     $.comment,
@@ -341,11 +348,11 @@ module.exports = grammar({
       seq('(', $.constraints, ')')
     ),
 
-    transformation: $ => /([^\n\r]@|[^@])*/,
+    transformation: $ => $._code_block,
 
-    script_code: $ => /([^\n\r]@|[^@])*/,
+    script_code: $ => $._code_block,
 
-    constraint_script_code: $ => /[^}]*/, // FIXME
+    constraint_script_code: $ => /[^}]+/, // FIXME
 
     string: $ => /"[^"]*"/,
 

@@ -1,6 +1,6 @@
 node_modules
 build
-src/
+src/*
+!src/scanner.c
 index.js
-binding.gyp
 *.wasm
