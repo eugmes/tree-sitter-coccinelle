@@ -7,16 +7,22 @@ const Parser = require('tree-sitter');
 const Coccinelle = require('..');
 
 function positionForOffset(input, offset) {
-  var col = 1;
-  var row = 1;
+  var col = 0;
+  var row = 0;
+  var newLine = true;
 
-  for (var c of input.substr(0, offset)) {
-    if (c == '\n') {
-      row = row + 1;
-      col = 1;
-    } else {
-      col = col + 1;
+  for (var c of input.substr(0, offset + 1)) {
+    if (newLine) {
+      newLine = false;
+      col = 0;
+      row += 1;
     }
+
+    if (c == '\n') {
+      newLine = true;
+    }
+
+    col += 1;
   }
 
   return {
