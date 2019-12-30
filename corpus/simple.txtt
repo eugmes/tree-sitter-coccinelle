@@ -16,7 +16,7 @@ Simplest Patch
 ---
 
 (source_file
-  changesets: (changesets
+  (changesets
     (changeset
-      metavariables: (metavariables)
-      transformation: (transformation))))
+      (metavariables)
+      (transformation))))

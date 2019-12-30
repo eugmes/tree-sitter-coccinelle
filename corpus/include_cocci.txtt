@@ -10,12 +10,12 @@ Include file
 ---
 
 (source_file
-  header: (header
-    (include file_name: (string)))
-  changesets: (changesets
+  (prolog
+    (include (string)))
+  (changesets
     (changeset
-      metavariables: (metavariables)
-      transformation: (transformation))))
+      (metavariables)
+      (transformation))))
 
 ==========
 Using file
@@ -29,11 +29,11 @@ using "other string"
 ---
 
 (source_file
-  header: (header (using file_name: (string)))
-  changesets: (changesets
+  (prolog (using (string)))
+  (changesets
     (changeset
-      metavariables: (metavariables)
-      transformation: (transformation))))
+      (metavariables)
+      (transformation))))
 
 ==============
 Using ISO file
@@ -47,11 +47,11 @@ using <path/to/iso/file>
 ---
 
 (source_file
-  header: (header (using file_name: (pathToIsoFile)))
-  changesets: (changesets
+  (prolog (using (pathIsoFile)))
+  (changesets
     (changeset
-      metavariables: (metavariables)
-      transformation: (transformation))))
+      (metavariables)
+      (transformation))))
 
 =======
 Virtual
@@ -65,8 +65,8 @@ virtual id, another_id, ID
 ---
 
 (source_file
-    header: (header (virtual ids: (id_list (id) (id) (id))))
-    changesets: (changesets
+    (prolog (virtual (pure_ident) (pure_ident) (pure_ident)))
+    (changesets
       (changeset
-        metavariables: (metavariables)
-        transformation: (transformation))))
+        (metavariables)
+        (transformation))))

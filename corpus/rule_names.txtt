@@ -8,10 +8,10 @@ Unnamed rule
 ---
 
 (source_file
-  changesets: (changesets
+  (changesets
     (changeset
-      metavariables: (metavariables)
-      transformation: (transformation))))
+      (metavariables)
+      (transformation))))
 
 ===================
 Unnamed with spaces
@@ -23,10 +23,10 @@ Unnamed with spaces
 ---
 
 (source_file
-  changesets: (changesets
+  (changesets
     (changeset
-      metavariables: (metavariables)
-      transformation: (transformation))))
+      (metavariables)
+      (transformation))))
 
 ============
 Simple named
@@ -38,11 +38,11 @@ Simple named
 ---
 
 (source_file
-  changesets: (changesets
+  (changesets
     (changeset
-      metavariables: (metavariables
-        rule_name: (id))
-      transformation: (transformation))))
+      (metavariables
+        (pure_ident))
+      (transformation))))
 
 ==============
 Simple depends
@@ -54,9 +54,9 @@ Simple depends
 ---
 
 (source_file
-  changesets: (changesets
+  (changesets
     (changeset
-      metavariables: (metavariables
-        rule_name: (id)
-        (depends dep: (dep (id))))
-      transformation: (transformation))))
+      (metavariables
+        (pure_ident)
+        (depends (dep (pure_ident))))
+      (transformation))))

@@ -8,31 +8,10 @@ Simple
 ---
 
 (source_file
-  changesets: (changesets
+  (changesets
     (script
-      metavariables: (script_metavariables language: (language))
-      script_code: (script_code))))
-
-=============
-Metavariables
-=============
-
-@script:ocaml@
-a << b.c;
-(d, p) << e.f;
-e;
-@@
-
----
-
-(source_file
-  changesets: (changesets
-    (script
-      metavariables: (script_metavariables language: (language)
-        (script_metadecl id: (id) origin: (mid (id) (id)))
-        (script_metadecl id: (id) syntax_id: (id) origin: (mid (id) (id)))
-        (script_metadecl id: (id)))
-      script_code: (script_code))))
+      (script_metavariables (pure_ident))
+      (script_code))))
 
 ==========
 Initialize
@@ -45,25 +24,10 @@ a << virtual.b;
 ---
 
 (source_file
-  changesets: (changesets
+  (changesets
     (script
-      metavariables: (script_metavariables language: (language)
-        (script_virt_metadecl id: (id) origin: (id)))
-      script_code: (script_code))))
-
-========
-Finalize
-========
-
-@finalize:python@
-a << virtual.b;
-@@
-
----
-
-(source_file
-  changesets: (changesets
-    (script
-      metavariables: (script_metavariables language: (language)
-        (script_virt_metadecl id: (id) origin: (id)))
-      script_code: (script_code))))
+      (script_metavariables (pure_ident)
+        (script_virt_metadecs
+          (script_meta_virt_nofresh (pure_ident)
+            (script_virt_name_decl (pure_ident)))))
+      (script_code))))
