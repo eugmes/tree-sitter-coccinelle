@@ -71,13 +71,13 @@ expect.extend({
   }
 });
 
-const examplesRoot = path.resolve(__dirname, '../examples');
+const examplesRoot = path.resolve(__dirname, 'examples');
 const testDirs = fs
   .readdirSync(examplesRoot)
   .filter(dir => /^[a-z]+$/.test(dir));
 
 describe.each(testDirs)('%s', dir => {
-  const root = path.resolve(examplesRoot, dir, 'ok');
+  const root = path.resolve(examplesRoot, dir);
   const cocciFiles = fs
     .readdirSync(root)
     .filter(file => /\.cocci$/.test(file));
