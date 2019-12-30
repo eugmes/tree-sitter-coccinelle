@@ -495,8 +495,8 @@ module.exports = grammar({
 
     inherited_or_local_meta: $ => choice(
       $.pure_ident, // FIXME
-      /* rule_name */ $.pure_ident, '.', $.pure_ident,
-      /* rule_name */ $.pure_ident, '.', $.pure_ident_kwd,
+      seq(/* rule_name */ $.pure_ident, '.', $.pure_ident),
+      seq(/* rule_name */ $.pure_ident, '.', $.pure_ident_kwd),
     ),
 
     bitfield: $ => seq(':', $.delimited_list_len),

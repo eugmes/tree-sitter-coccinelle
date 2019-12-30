@@ -1,0 +1,22 @@
+==================
+Non-local Argument
+==================
+
+@@
+position p : script:python(r.e) { True };
+@@
+
+---
+
+(source_file
+  (changesets
+    (changeset
+      (metavariables
+        (metadecs
+          (metadec (pure_ident_or_meta_ident_with_constraints (pure_ident_or_meta_ident (pure_ident)) (constraints (pure_ident) (inherited_or_local_meta (pure_ident) (pure_ident)) (constraint_script_code))))
+        )
+      )
+      (transformation)
+    )
+  )
+)
