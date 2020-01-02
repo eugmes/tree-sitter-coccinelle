@@ -31,8 +31,8 @@ Script Boundaries
 
 (source_file
   (changesets
-    (script (script_metavariables (pure_ident)) (script_code))
-    (script (script_metavariables (pure_ident)) (script_code))
+    (script (script_metavariables (language)) (script_code))
+    (script (script_metavariables (language)) (script_code))
   )
 )
 
@@ -50,7 +50,7 @@ Script/Changeset Boundary
 
 (source_file
   (changesets
-    (script (script_metavariables (pure_ident)) (script_code))
+    (script (script_metavariables (language)) (script_code))
     (changeset (metavariables) (transformation))
   )
 )
@@ -70,6 +70,6 @@ Changeset/Script Boundary
 (source_file
   (changesets
     (changeset (metavariables) (transformation))
-    (script (script_metavariables (pure_ident)) (script_code))
+    (script (script_metavariables (language)) (script_code))
   )
 )

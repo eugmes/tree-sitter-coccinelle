@@ -10,7 +10,7 @@ Simple
 (source_file
   (changesets
     (script
-      (script_metavariables (pure_ident))
+      (script_metavariables (language))
       (script_code))))
 
 ==========
@@ -26,7 +26,7 @@ a << virtual.b;
 (source_file
   (changesets
     (script
-      (script_metavariables (pure_ident)
+      (script_metavariables (language)
         (script_virt_metadecs
           (script_meta_virt_nofresh (pure_ident)
             (script_virt_name_decl (virtual_ident (pure_ident))))))
