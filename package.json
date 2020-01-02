@@ -13,8 +13,7 @@
     "prepare": "",
     "install": "npm run build",
     "prepublishOnly": "npm test",
-    "web-ui": "tree-sitter build-wasm && tree-sitter web-ui",
-    "movefiles": "./movefiles.sh"
+    "web-ui": "tree-sitter build-wasm && tree-sitter web-ui"
   },
   "author": "Ievgenii Meshcheriakov",
   "license": "ISC",
