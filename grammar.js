@@ -57,7 +57,7 @@ module.exports = grammar({
 
     metavariables: $ => seq(
       '@',
-      optional($.pure_ident),
+      optional(alias($.pure_ident, $.rule_name)),
       optional($.extends),
       optional($.depends),
       optional($.choose_iso),
@@ -80,7 +80,7 @@ module.exports = grammar({
       'script',
       ':',
       alias($.pure_ident, $.language),
-      optional($.pure_ident),
+      optional(alias($.pure_ident, $.rule_name)),
       optional($.depends),
       '@',
       optional($.script_metadecs),
@@ -123,7 +123,7 @@ module.exports = grammar({
     ),
 
     dep: $ => choice(
-      $.pure_ident,
+      alias($.pure_ident, $.rule_name),
       $.dep_not,
       $.dep_cond,
       $.dep_bin_op,
@@ -134,14 +134,14 @@ module.exports = grammar({
     dep_not: $ => seq(
       '!',
       choice(
-        $.pure_ident,
+        alias($.pure_ident, $.rule_name),
         seq('(', $.dep, ')')
       )
     ),
 
     dep_cond: $ => seq(
       choice('ever', 'never'),
-      $.pure_ident
+      alias($.pure_ident, $.rule_name)
     ),
 
     dep_bin_op: $ => choice(
@@ -172,7 +172,7 @@ module.exports = grammar({
     script_name_decl: $ => seq('<<', $.checked_meta_name),
 
     checked_meta_name: $ => choice(
-      seq(/* rule_name */$.pure_ident, '.', $.pure_ident),
+      seq(alias($.pure_ident, $.rule_name), '.', $.pure_ident),
       $.virtual_ident,
       $.merge_ident
     ),
@@ -283,7 +283,7 @@ module.exports = grammar({
       // TODO use an existing rule for those?
       $.pure_ident, /* TMetaId */
       $.virtual_ident,
-      seq(/* rule_name */ $.pure_ident, '.', $.pure_ident)
+      seq(alias($.pure_ident, $.rule_name), '.', $.pure_ident)
     ),
 
     pure_ident_or_meta_ident_with_constraints: $ => seq(
@@ -301,7 +301,7 @@ module.exports = grammar({
     ),
 
     meta_ident: $ => seq(
-      $.pure_ident,
+      alias($.pure_ident, $.rule_name),
       '.',
       choice($.pure_ident, alias($.pure_ident_kwd, $.pure_ident)),
     ),
@@ -504,8 +504,8 @@ module.exports = grammar({
 
     inherited_or_local_meta: $ => choice(
       $.pure_ident, // FIXME
-      seq(/* rule_name */ $.pure_ident, '.', $.pure_ident),
-      seq(/* rule_name */ $.pure_ident, '.', alias($.pure_ident_kwd, $.pure_ident)),
+      seq(alias($.pure_ident, $.rule_name), '.', $.pure_ident),
+      seq(alias($.pure_ident, $.rule_name), '.', alias($.pure_ident_kwd, $.pure_ident)),
     ),
 
     bitfield: $ => seq(':', $.delimited_list_len),

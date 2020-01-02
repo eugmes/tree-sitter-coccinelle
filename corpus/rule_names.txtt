@@ -41,7 +41,7 @@ Simple named
   (changesets
     (changeset
       (metavariables
-        (pure_ident))
+        (rule_name))
       (transformation))))
 
 ==============
@@ -57,6 +57,6 @@ Simple depends
   (changesets
     (changeset
       (metavariables
-        (pure_ident)
-        (depends (dep (pure_ident))))
+        (rule_name)
+        (depends (dep (rule_name))))
       (transformation))))
