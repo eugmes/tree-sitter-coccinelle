@@ -173,8 +173,8 @@ module.exports = grammar({
 
     checked_meta_name: $ => choice(
       seq(/* rule_name */$.pure_ident, '.', $.pure_ident),
-      seq('virtual', '.', $.pure_ident),
-      seq('merge', '.', $.pure_ident)
+      $.virtual_ident,
+      $.merge_ident
     ),
 
     script_name_decl_ext: $ => choice(
@@ -188,8 +188,8 @@ module.exports = grammar({
     script_meta_virt_nofresh: $ => seq($.pure_ident, $.script_virt_name_decl),
 
     script_virt_name_decl: $ => choice(
-      seq('<<', 'virtual', '.', $.pure_ident),
-      seq('<<', 'merge', '.', $.pure_ident)
+      seq('<<', $.virtual_ident),
+      seq('<<', $.merge_ident)
     ),
 
     _initializer: $ => choice('initialiser', 'initializer'),
@@ -263,12 +263,12 @@ module.exports = grammar({
 
     list_len_pure: $ => choice(
       $.int,
-      seq('virtual', '.', $.pure_ident)
+      $.virtual_ident
     ),
 
     pure_ident_or_meta_ident_with_constraints_virt: $ => choice(
       $.pure_ident_or_meta_ident_with_constraints,
-      seq('virtual', '.', $.pure_ident)
+      $.virtual_ident
     ),
 
     pure_ident_or_meta_ident_with_seed: $ => choice(
@@ -282,7 +282,7 @@ module.exports = grammar({
       $.string,
       // TODO use an existing rule for those?
       $.pure_ident, /* TMetaId */
-      seq('virtual', '.', $.pure_ident),
+      $.virtual_ident,
       seq(/* rule_name */ $.pure_ident, '.', $.pure_ident)
     ),
 
@@ -305,6 +305,10 @@ module.exports = grammar({
       '.',
       choice($.pure_ident, alias($.pure_ident_kwd, $.pure_ident)),
     ),
+
+    virtual_ident: $ => seq('virtual', '.', $.pure_ident),
+
+    merge_ident : $ => seq('merge', '.', $.pure_ident),
 
     pure_ident_kwd: $ => choice(
       'identifier',
@@ -514,7 +518,7 @@ module.exports = grammar({
 
     list_len_pure: $ => choice(
       $.int,
-      seq('virtual', '.', $.pure_ident)
+      $.virtual_ident
     ),
 
     ident: $ => choice($.pure_ident, $.meta_ident), // FIXME
