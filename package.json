@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-coccinelle",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Tree-sitter parser for coccinelle",
   "main": "index.js",
   "keywords": [
