@@ -246,7 +246,7 @@ module.exports = grammar({
       seq($._initializer, 'list', '[', $.list_len, ']', comma_list($.pure_ident_or_meta_ident_with_constraints)),
       seq('identifier', 'list', '[', $.list_len, ']', comma_list($.pure_ident_or_meta_ident_with_constraints)),
       seq('statement', 'list', '[', $.list_len, ']', comma_list($.pure_ident_or_meta_ident_with_constraints)),
-      seq('symbol', comma_list($.pure_ident_or_symbol)),
+      seq('symbol', comma_list($.pure_ident)),
       seq('format', comma_list($.pure_ident_or_meta_ident_with_constraints)),
       seq('format', 'list', comma_list($.pure_ident_or_meta_ident_with_constraints)),
       seq('format', 'list', '[', $.list_len, ']', comma_list($.pure_ident_or_meta_ident_with_constraints)),
@@ -255,8 +255,6 @@ module.exports = grammar({
     ),
 
     metadecs: $ => repeat1(seq($.metadec, ';')),
-
-    pure_ident_or_symbol: $ => $.pure_ident, // FIXME
 
     list_len: $ => choice(
       $.pure_ident_or_meta_ident_with_constraints,
