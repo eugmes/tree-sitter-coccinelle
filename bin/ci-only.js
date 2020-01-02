@@ -3,9 +3,10 @@
 
 /*
  * This script runs command passed to it together with arguments only when
- * it is run by `npm ci`.
+ * it is run by `npm ci` or `npm install-ci-test`.
  */
-if (process.env.npm_config_refer === 'ci') {
+if ((process.env.npm_config_refer === 'ci')
+ || (process.env.npm_config_refer === 'install-ci-test')) {
   const spawn = require('child_process').spawn;
   const proc = spawn(process.argv[2], process.argv.slice(3), {stdio: 'inherit'});
 
