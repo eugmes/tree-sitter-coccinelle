@@ -293,7 +293,7 @@ module.exports = grammar({
 
     pure_ident_or_meta_ident: $ => choice(
       $.pure_ident,
-      $.pure_ident_kwd,
+      alias($.pure_ident_kwd, $.pure_ident),
       $.meta_ident
       /* ,
       $.meta_ident_sym
@@ -303,7 +303,7 @@ module.exports = grammar({
     meta_ident: $ => seq(
       $.pure_ident,
       '.',
-      choice($.pure_ident, $.pure_ident_kwd),
+      choice($.pure_ident, alias($.pure_ident_kwd, $.pure_ident)),
     ),
 
     pure_ident_kwd: $ => choice(
@@ -473,7 +473,7 @@ module.exports = grammar({
 
     ident: $ => choice(
       $.pure_ident,
-      $.pure_ident_kwd,
+      alias($.pure_ident_kwd, $.pure_ident),
       $.meta_ident
     ),
 
@@ -501,7 +501,7 @@ module.exports = grammar({
     inherited_or_local_meta: $ => choice(
       $.pure_ident, // FIXME
       seq(/* rule_name */ $.pure_ident, '.', $.pure_ident),
-      seq(/* rule_name */ $.pure_ident, '.', $.pure_ident_kwd),
+      seq(/* rule_name */ $.pure_ident, '.', alias($.pure_ident_kwd, $.pure_ident)),
     ),
 
     bitfield: $ => seq(':', $.delimited_list_len),
