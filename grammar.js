@@ -516,11 +516,6 @@ module.exports = grammar({
       $.list_len_pure
     ),
 
-    list_len_pure: $ => choice(
-      $.int,
-      $.virtual_ident
-    ),
-
     ident: $ => choice($.pure_ident, $.meta_ident), // FIXME
 
     comment: $ => token(choice(
