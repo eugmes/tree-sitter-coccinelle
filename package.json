@@ -10,9 +10,9 @@
   "scripts": {
     "build": "tree-sitter generate && node-gyp rebuild",
     "test": "tree-sitter test && jest --silent",
-    "prepare": "",
-    "install": "npm run build",
-    "prepublishOnly": "npm test",
+    "install": "node bin/ci-only.js npm run generate && node-gyp rebuild",
+    "generate": "tree-sitter generate",
+    "prepack": "npm run generate",
     "web-ui": "tree-sitter build-wasm && tree-sitter web-ui"
   },
   "author": "Ievgenii Meshcheriakov",
@@ -27,6 +27,7 @@
     "tree-sitter-cli": "^0.15.14"
   },
   "files": [
+    "bin/ci-only.js",
     "binding.gyp",
     "src/"
   ]
