@@ -114,11 +114,9 @@ module.exports = grammar({
       $.pure_ident
     ),
 
-    scope: $ => choice('exists', 'forall'),
-
     depends: $ => seq(
       'depends', 'on',
-      optional($.scope),
+      optional($.exists),
       $.dep,
     ),
 
@@ -364,8 +362,6 @@ module.exports = grammar({
 
     pure_ident: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
-    ctypes: $ => comma_list($.ctype),
-
     ctype: $ => choice(
       seq(optional($.const_vol), $.all_basic_types, repeat($.mul)),
       seq(optional($.const_vol), $.signed_or_unsigned),
@@ -438,7 +434,7 @@ module.exports = grammar({
       'char',
       'short',
       seq('short', 'int'),
-      seq('int'),
+      'int',
       //$.ident, /* TODO TMetaType */
       'long',
       seq('long', 'int'),
